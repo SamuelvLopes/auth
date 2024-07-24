@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  callback String
+  methods  ClientMethod[]
+}
+
+model Method {
+  id      Int       @id @default(autoincrement())
+  name    String?
+  clients ClientMethod[]
+}
+
+model ClientMethod {
+  id           Int     @id @default(autoincrement())
+  clientId     Int
+  methodId     Int
+  OauthclientID     String?  // Coluna clientID que pode ser nula
+  OauthclientSecret String?  // Coluna clientSecret que pode ser nula
+
+  client  Client  @relation(fields: [clientId], references: [id])
+  method  Method  @relation(fields: [methodId], references: [id])
+}
